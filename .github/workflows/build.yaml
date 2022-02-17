@@ -35,9 +35,10 @@ jobs:
     needs: [ setup_ide ]
 
     runs-on: ubuntu-latest
-      strategy:
-        matrix:
-          examples: [ example/example_1, example/example_2 ]
+
+    strategy:
+      matrix:
+        examples: [ example/example_1, example/example_2 ]
 
     steps:
     - name: Step 1 - Checkout
