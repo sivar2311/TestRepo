@@ -35,10 +35,28 @@ jobs:
     needs: [ setup_ide ]
 
     runs-on: ubuntu-latest
+      strategy:
+        matrix:
+          examples: [ example/example_1, example/example_2 ]
 
     steps:
-    - name: Step 6 - Build example 1 
-      run: pio ci -b esp12e - b esp32.dev examples/example_1
+    - name: Step 1 - Checkout
+      uses: actions/checkout@v2
 
-    - name: Step 7 - Build example 2
-      run: pio ci -b esp12e - b esp32.dev examples/example_2
+    - name: Step 2 - Cache pip
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+
+    - name: Step 3 - Cache PlatformIO
+      uses: actions/cache@v2
+      with:
+        path: ~/.platformio
+        key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+
+    - name: Step 4 - Matrix build
+      run: pio ci -b esp12e - b esp32.dev
+      env:
+        PLATFORMIO_CI_SRC: ${{ matrix.examples }}
