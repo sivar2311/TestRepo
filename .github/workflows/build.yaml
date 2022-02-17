@@ -21,14 +21,15 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: ${{ runner.os }}-pip-
+        key: ${{ runner.os }}-pip
+        restore-keys: ${{ runner.os }}-pip
 
     - name: Step 3 - Cache PlatformIO
       uses: actions/cache@v2
       with:
         path: ~/.platformio
-        key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+        key: ${{ runner.os }}-pio
+        restore-key: ${{ runner.os}}-pio
 
     - name: Step 4 - Set up Python
       uses: actions/setup-python@v2
@@ -39,7 +40,9 @@ jobs:
         pip install --upgrade platformio
 
     - name: Step 6 - Matrix build
-      run: pio ci --lib="." -b esp12e - b esp32.dev ${{ matrix.examples }}
+      run: pio ci --lib="." -b esp12e - b esp32.dev
+      env:
+        PLATFORMIO_CI_SRC: ${{ matrix.examples }}
 #        
 
 #  build-examples:
