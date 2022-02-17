@@ -39,9 +39,7 @@ jobs:
         pip install --upgrade platformio
 
     - name: Step 6 - Matrix build
-      run: pio ci --lib="." -b esp12e - b esp32.dev
-      env:
-        PLATFORMIO_CI_SRC: ${{ matrix.examples }}
+      run: pio ci --lib="." -b esp12e - b esp32.dev ${{ matrix.examples }}
 #        
 
 #  build-examples:
