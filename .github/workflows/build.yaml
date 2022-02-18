@@ -17,7 +17,7 @@ jobs:
     - name: Step 1 - Checkout repository
       uses: actions/checkout@v2
 
-    - name: Step 2 -  Cache pip
+    - name: Step 2 - Cache pip
       uses: actions/cache@v2
       with:
         path: ~/.cache/pip
@@ -39,41 +39,34 @@ jobs:
         python -m pip install --upgrade pip
         pip install --upgrade platformio
 
-    - name: Step 6 - Matrix build
+
+  build-examples:
+
+    needs: [ setup_ide ]
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        examples: [ examples/example_1, examples/example_2 ]
+
+    steps:
+    - name: Step 1 - Checkout
+      uses: actions/checkout@v2
+
+    - name: Step 2 - Cache pip
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os}}-pip
+
+    - name: Step 3 - Cache PlatformIO
+      uses: actions/cache@v2
+      with:
+        path: ~/.platformio
+        key: ${{ runner.os}}-pio
+
+    - name: Step 4 - Matrix build
       run: pio ci -b esp12e -b esp32dev
       env:
         PLATFORMIO_CI_SRC: ${{ matrix.examples }}
-#        
-
-#  build-examples:
-#
-#    needs: [ setup_ide ]
-#
-#    runs-on: ubuntu-latest
-#
-#    strategy:
-#      matrix:
-#        examples: [ example/example_1, example/example_2 ]
-#
-#    steps:
-#    - name: Step 1 - Checkout
-#      uses: actions/checkout@v2
-#
-#    - name: Step 2 - Cache pip
-#      uses: actions/cache@v2
-#      with:
-#        path: ~/.cache/pip
-#        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-#        restore-keys: ${{ runner.os }}-pip-
-#
-#    - name: Step 3 - Cache PlatformIO
-#      uses: actions/cache@v2
-#      with:
-#        path: ~/.platformio
-#        key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-#
-#    - name: Step 4 - Matrix build
-#      run: pio ci -b esp12e - b esp32.dev
-#      env:
-#        PLATFORMIO_CI_SRC: ${{ matrix.examples }}
-#
