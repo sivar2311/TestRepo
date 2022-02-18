@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        examples: [ examples/example_1/example_1.ino, examples/example_2/example_2.ino ]    
+        examples: [ examples/example_1, examples/example_2 ]    
 
     steps:
     - name: Step 1 - Checkout repository
@@ -29,7 +29,7 @@ jobs:
       with:
         path: ~/.platformio
         key: ${{ runner.os }}-pio
-        restore-key: ${{ runner.os}}-pio
+        restore-keys: ${{ runner.os}}-pio
 
     - name: Step 4 - Set up Python
       uses: actions/setup-python@v2
@@ -40,7 +40,7 @@ jobs:
         pip install --upgrade platformio
 
     - name: Step 6 - Matrix build
-      run: pio ci --lib="." -b esp12e - b esp32dev
+      run: pio ci -b esp12e
       env:
         PLATFORMIO_CI_SRC: ${{ matrix.examples }}
 #        
