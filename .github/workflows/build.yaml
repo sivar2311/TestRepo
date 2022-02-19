@@ -11,7 +11,10 @@ jobs:
 
     strategy:
       matrix:
-        examples: [ examples/example_1, examples/example_2 ]    
+        board: [ esp12e, esp32dev ]
+        example:
+          - examples/example_1
+          - examples_example_2
 
     steps:
     - name: Step 1 - Checkout repository
@@ -39,34 +42,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install --upgrade platformio
 
-
-  build-examples:
-
-    needs: [ setup_ide ]
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        examples: [ examples/example_1, examples/example_2 ]
-
-    steps:
-    - name: Step 1 - Checkout
-      uses: actions/checkout@v2
-
-    - name: Step 2 - Cache pip
-      uses: actions/cache@v2
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os}}-pip
-
-    - name: Step 3 - Cache PlatformIO
-      uses: actions/cache@v2
-      with:
-        path: ~/.platformio
-        key: ${{ runner.os}}-pio
-
     - name: Step 4 - Matrix build
-      run: pio ci -b esp12e -b esp32dev
+      run: pio ci -b {{ matrix.board }}
       env:
-        PLATFORMIO_CI_SRC: ${{ matrix.examples }}
+        PLATFORMIO_CI_SRC: ${{ matrix.example }}
+
