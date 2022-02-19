@@ -11,7 +11,9 @@ jobs:
 
     strategy:
       matrix:
-        board: [ esp12e, esp32dev ]
+        board: 
+          - esp12e
+          - esp32dev
         example:
           - examples/example_1
           - examples_example_2
@@ -43,7 +45,7 @@ jobs:
         pip install --upgrade platformio
 
     - name: Step 4 - Matrix build
-      run: pio ci -b {{ matrix.board }}
+      run: pio ci -b ${{ matrix.board }}
       env:
         PLATFORMIO_CI_SRC: ${{ matrix.example }}
 
